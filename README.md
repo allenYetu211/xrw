@@ -22,6 +22,15 @@ yarn add xrw -dev
 
 
 > 配置
+- package.json 
+```json
+{
+  "scripts" :{
+    "xrw": "xrw"
+  }
+
+}
+```
 - 根目录新建文件 rewrite.config.json
 ```json
 {
