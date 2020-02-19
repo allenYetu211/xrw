@@ -3284,3 +3284,12 @@ wrappy@1:
   version "1.0.2"
   resolved "http://10.80.84.176:4873/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
+
+xrw@^1.0.0:
+  version "1.0.0"
+  resolved "http://10.80.84.176:4873/xrw/-/xrw-1.0.0.tgz#e8d5ce3e3254e306cdd70b33c107bd7f858e8c9e"
+  integrity sha512-gmMvYu69g6aiuUPcliL3hrbspeugAY55MlaedcUXKUb7OPyS+bew1UU2sInIdtloxv/G5x58wnL5E0m60Aa+jw==
+  dependencies:
+    rollup "^1.31.1"
+    rollup-plugin-preserve-shebang "^0.1.6"
+    rollup-watch "^4.3.1"

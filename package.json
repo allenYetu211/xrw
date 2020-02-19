@@ -27,6 +27,7 @@
   "dependencies": {
     "rollup": "^1.31.1",
     "rollup-plugin-preserve-shebang": "^0.1.6",
-    "rollup-watch": "^4.3.1"
+    "rollup-watch": "^4.3.1",
+    "xrw": "^1.0.0"
   }
 }
