@@ -28,7 +28,6 @@ yarn add xrw -dev
   "scripts" :{
     "xrw": "xrw"
   }
-
 }
 ```
 - 根目录新建文件 rewrite.config.json
@@ -53,9 +52,9 @@ yarn add xrw -dev
 
 > 使用
 ```js
-// mobileFiles 与 rewrite.config.json 中需要匹配
+// mobile 与 rewrite.config.json 中需要匹配
 yarn xrw mobile 
 
-// 可支持多个目录配置
+// 可同时支持多个文件目录的修改
 yarn xrw pc mobile
 ```

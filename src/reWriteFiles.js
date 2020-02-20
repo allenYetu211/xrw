@@ -5,8 +5,13 @@ let reWriteConfig = '';
 
 // 根据配置对局读取信息
 const reWriteFiles = (config, params) => {
-  // todo  检测目标信息，给出提示
   params._.forEach((item) => {
+
+    if (!config[item]) {
+      console.error(`${item} 未找到目标位置项`)
+      return  
+    }
+
     reWriteConfig = config[item];
     const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`)
     traverseRewrite(buildPath)
