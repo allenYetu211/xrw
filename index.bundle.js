@@ -25,25 +25,11 @@ const getRewriteConfig = () => {
   })
 };
 
-// 根据配置对局读取信息
-const reWriteFiles = (config, params) => {
-  // todo  检测目标信息，给出提示
-  console.log('params:', params);
-  params._.forEach((item) => {
-    if (!config[item]) {
-      console.error(`${item} 未找到目标位置项`);
-      return  
-    }
+const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`);
 
-    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`);
-    console.log('config[item]:::', config[item]);
-    traverseRewrite(buildPath, config[item]);
-  });
-};
 
-// 获取文件 
-const traverseRewrite = (buildPath, target) => {
-  const _t = target;
+// 拷贝内容
+const copyFiles = (buildPath, isFilter, callback) => {
   fs.readdir(buildPath, (err, files) => {
     if (err) {
       console.warn(`获取dir失败：${buildPath}\n Error Info: ${err}`);
@@ -51,7 +37,7 @@ const traverseRewrite = (buildPath, target) => {
     }
     files.forEach((filesName) => {
       // 过滤不需要匹配的文件
-      if(!utilFiltrFiles(path.extname(filesName))) {
+      if(isFilter && !utilFiltrFiles(path.extname(filesName))) {
         return
       }
       const filedir = path.join(buildPath, filesName);
@@ -66,18 +52,7 @@ const traverseRewrite = (buildPath, target) => {
 
         if(isFile){
           // console.log(filedir);
-          const content = fs.readFileSync(filedir, 'utf-8');
-          console.log('==========');
-          console.log('==========');
-          console.log('target===>>>',_t);
-          console.log('==========');
-          console.log('==========');
-
-          const newContent = reWriteContent(content, _t);
-          fs.writeFile(filedir, newContent, (err) => {
-            if (err) throw err;
-            console.log(`${filesName} 重写完成`);
-          });
+          callback({filedir, filesName});
         }
 
         if(isDir) {
@@ -88,19 +63,46 @@ const traverseRewrite = (buildPath, target) => {
     });
   });
 };
+
 // 过滤文件
 const utilFiltrFiles = (filesExtname) => {
   const supportiveExtaname = ['.js', '.html', ''];
   return supportiveExtaname.includes(filesExtname)
 };
 
+let reWriteConfig = '';
+
+// 根据配置对局读取信息
+const reWriteFiles = (config, params) => {
+  params._.forEach((item) => {
+
+    if (!config[item]) {
+      console.error(`${item} 未找到目标位置项`);
+      return  
+    }
+
+    reWriteConfig = config[item];
+    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`);
+    // traverseRewrite(buildPath)
+    copyFiles(buildPath, true, ({filedir, filesName}) => {
+      const content = fs.readFileSync(filedir, 'utf-8');
+      const newContent = reWriteContent(content);
+      fs.writeFile(filedir, newContent, (err) => {
+        if (err) throw err;
+        console.log(`${filesName} 重写完成`);
+      });
+    });
+  });
+};
+
+
 // 重写内容
-const reWriteContent = (content, target) => {
-  const trOBJ = target.rewriteContainer;
+const reWriteContent = (content) => {
+  const trOBJ = reWriteConfig.rewriteContainer;
   let newContent = content;
   Object.keys(trOBJ).forEach((key) => {
    
-    newContent = newContent.replace( new RegExp(key,'g'), trOBJ[key]);
+    newContent = newContent.replace( new RegExp(key,'g'), trOBJ[key] );
   });
   return newContent;
 };

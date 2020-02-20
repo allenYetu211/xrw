@@ -1,11 +1,12 @@
 import fs from "fs";
+import {copy} from 'fs-extra';
 import path from "path";
 
 let reWriteConfig = '';
 
 // 根据配置对局读取信息
-const reWriteFiles = (config, params) => {
-  params._.forEach((item) => {
+const reWriteFiles =  (config, params) => {
+  params._.forEach( async (item) => {
 
     if (!config[item]) {
       console.error(`${item} 未找到目标位置项`)
@@ -13,8 +14,16 @@ const reWriteFiles = (config, params) => {
     }
 
     reWriteConfig = config[item];
-    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`)
-    traverseRewrite(buildPath)
+    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`);
+    const copyNewFiles = path.resolve(`${process.cwd()}/cp-${config[item].buildPath }`);
+
+    try {
+      await copy(buildPath, copyNewFiles)
+      traverseRewrite(copyNewFiles);
+    } catch(e) {
+      console.log(e)
+    }
+    // traverseRewrite(copyNewFiles);
   })
 }
 

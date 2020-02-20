@@ -1,6 +1,6 @@
 {
   "mobileFiles": {
-    "buildPath" : "/build-mobile/",
+    "buildPath" : "build-mobile",
     "rewriteContainer": {
       "{{servicePath}}": "cloud.xylink.com",
       "{{cdnPath}}": "cdn.xylink.com"
