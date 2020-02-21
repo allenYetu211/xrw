@@ -1,5 +1,4 @@
-import fs from "fs";
-import {copy} from 'fs-extra';
+import fsExtra from 'fs-extra';
 import path from "path";
 
 let reWriteConfig = '';
@@ -13,23 +12,36 @@ const reWriteFiles =  (config, params) => {
       return  
     }
 
+    if (/\//g.test(config[item].buildPath)) {
+      console.log('buildPath 目录下不能携带')
+    }
+
     reWriteConfig = config[item];
-    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath }`);
-    const copyNewFiles = path.resolve(`${process.cwd()}/cp-${config[item].buildPath }`);
+
+    const buildPath = path.resolve(`${process.cwd()}/${config[item].buildPath}`);
+    const backupsFiles = path.resolve(`${process.cwd()}/cp-${config[item].buildPath.replace(/(^\/*)|(\/*$)/g, '')}`);
+
+
+    // 验证是否存在拷贝
+    const verify = await fsExtra.pathExists(buildPath);
+    if (!verify) {
+      console.warn(`目标文件未找到：${buildPath}`);
+      return
+    } 
 
     try {
-      await copy(buildPath, copyNewFiles)
-      traverseRewrite(copyNewFiles);
+      await fsExtra.copy(buildPath, backupsFiles)
+      traverseRewrite(backupsFiles);
     } catch(e) {
       console.log(e)
     }
-    // traverseRewrite(copyNewFiles);
+
   })
 }
 
 // 获取文件 
 const traverseRewrite = (buildPath) => {
-  fs.readdir(buildPath, (err, files) => {
+  fsExtra.readdir(buildPath, (err, files) => {
     if (err) {
       console.warn(`获取dir失败：${buildPath}\n Error Info: ${err}`);
       return 
@@ -41,7 +53,7 @@ const traverseRewrite = (buildPath) => {
       }
       const filedir = path.join(buildPath, filesName);
 
-      fs.stat(filedir,(statError, stats) => {
+      fsExtra.stat(filedir,(statError, stats) => {
         if (statError) {
           console.warn(`获取stat失败文件名称：${filedir}\n Error Info: ${statError}`);
           return
@@ -51,9 +63,9 @@ const traverseRewrite = (buildPath) => {
 
         if(isFile){
           // console.log(filedir);
-          const content = fs.readFileSync(filedir, 'utf-8');
+          const content = fsExtra.readFileSync(filedir, 'utf-8');
           const newContent = reWriteContent(content);
-          fs.writeFile(filedir, newContent, (err) => {
+          fsExtra.writeFile(filedir, newContent, (err) => {
             if (err) throw err;
             console.log(`${filesName} 重写完成`);
           })
