@@ -3,17 +3,16 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var fs = _interopDefault(require('fs'));
+var fsExtra = _interopDefault(require('fs-extra'));
 var path = _interopDefault(require('path'));
 var minimist = _interopDefault(require('minimist'));
-var fsExtra = _interopDefault(require('fs-extra'));
 
 // console.log('fs', fs)
 const filePath = path.resolve(`${process.cwd()}/rewrite.config.json`);
 
 const getRewriteConfig = () => {
   return new Promise((resolve , reject) => {
-    fs.readFile(filePath, 'utf-8', (err, data) => {
+    fsExtra.readFile(filePath, 'utf-8', (err, data) => {
 
         if (err) {
           reject(err);
@@ -123,6 +122,7 @@ const reWriteContent = (content) => {
 
 (async function() {
     const config = await getRewriteConfig();
+    console.log('process.argv', process.argv);
     const params = minimist(process.argv.slice(2));
     reWriteFiles(config, params);
 })();
