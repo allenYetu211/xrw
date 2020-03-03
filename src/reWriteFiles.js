@@ -81,7 +81,7 @@ const traverseRewrite = (buildPath) => {
 }
 // 过滤文件
 const utilFiltrFiles = (filesExtname) => {
-  const supportiveExtaname = ['.js', '.html', ''];
+  const supportiveExtaname = ['.js', '.html', '.css', ''];
   return supportiveExtaname.includes(filesExtname)
 }
 
